@@ -1,0 +1,267 @@
+#include<iostream>
+using namespace std;
+#include<string.h>
+#include<string>
+struct CITIZEN{
+	string id;
+	string name;
+	string nativePlace;
+};
+#define ElementType CITIZEN
+//#define ElementType int
+#define Max 100
+struct LIST{
+	int numberOfElements;
+	ElementType element[100];
+};
+void InitList(LIST &l){
+	l.numberOfElements = 0;
+}
+bool IsEmpty(LIST l){
+	if(l.numberOfElements == 0)
+		return true;
+	return false;
+}
+bool IsFull(LIST l){
+	if(l.numberOfElements == Max)
+		return true;
+	return false;
+}
+int AddFirst(LIST &l, ElementType newElement){
+	if(IsFull(l)){
+		return 1;
+	}
+	for(int i = 0;i < l.numberOfElements;i++)
+		l.element[i+1] = l.element[i];
+	l.numberOfElements ++ ;
+	l.element[0] = newElement;
+	return 0;		
+}
+int AddLast(LIST &l, ElementType newElement){
+	if(IsFull(l))
+		return 1;
+	l.element[++l.numberOfElements] = newElement;
+	return 0;
+}
+int RemoveFirst(LIST &l){
+	if(IsEmpty(l))
+		return 1;
+	for(int i=0;i<l.numberOfElements;i++)
+		l.element[i] = l.element[i+1];
+	l.numberOfElements--;
+	return 0;
+}
+int RemoveLast(LIST &l){
+	if(IsEmpty(l))	return 1;
+	l.numberOfElements--;
+	return 0;
+}
+int FindElement(LIST l, string Id){
+	for(int i=0;i<l.numberOfElements;i++)
+		if(l.element[i].id == Id)
+			return i;
+	return -1;
+}
+bool IsSmallerOrEqual(ElementType a, ElementType b){
+	return a.id <= b.id;
+}
+bool IsSmallerOrEqual(int a, int b){
+	return a <= b;
+}
+void QuickSort(LIST &l, int begin, int end){
+	if(l.numberOfElements <= 1)	return;
+	int i = begin, j = end;
+	ElementType key = l.element[(i + j)/2];
+	while(i <= j){
+		while(IsSmallerOrEqual(l.element[i], key))	i++;
+		while(IsSmallerOrEqual(key, l.element[j]))	j--;
+		if(i <= j){
+			swap(l.element[i], l.element[j]);
+			i++;	j--;
+		}
+	}
+}
+int BinaryFindElement(LIST l, string id){
+	QuickSort(l, 0, l.numberOfElements - 1);
+	int left = 0, right = l.numberOfElements - 1, mid;
+	while(left <= right){
+		mid = (left + right)/2;
+		if(l.element[mid].id == id)
+			return mid;
+		else
+			if(l.element[mid].id > id)
+				right = mid - 1;
+			else
+				left = mid + 1;
+	}
+	return -1;
+}
+void SelectionSort(LIST l){
+	for(int i = 0; i < l.numberOfElements -1; i++){
+		int minPos = i;
+		for(int j = i+1; j < l.numberOfElements; j++)
+			if(l.element[minPos].id > l.element[j].id)
+				minPos = j;
+		if(minPos != i)	swap(l.element[minPos], l.element[i]);
+	}
+}
+void PrintElement(int n){
+	cout<<"\n"<<n;
+}
+void InputCitizen(CITIZEN &Name){
+	cout<<"\nNhap ma so can can: ";
+	cin>>Name.id;
+	cin.ignore();
+	cout<<"Nhap ho ten cong dan: ";
+	getline(cin, Name.name);
+	cout<<"\nNhap que quan: ";
+	cin.ignore();
+	getline(cin, Name.nativePlace);
+}
+void PrintCitizen(CITIZEN
+Name){
+	cout<<"\nMa so can cuoc: ";
+	cout<<"\nTen cong dan: "<<Name.name;
+	cout<<"\nQue quan: ";
+}
+void EnumerateList(LIST l){
+	if(IsEmpty(l))	cout<<"\nDanh sach rong!";
+	else{
+		cout<<"\nCac phan tu trong danh sach: ";
+		for(int i = 0; i < l.numberOfElements; i++)
+			PrintCitizen(l.element[i]);
+	}
+}
+void PrintList(LIST l){
+	if(IsEmpty(l))	cout<<"\nDanh sach rong! Khong co cong dan nao!";
+	else{
+		cout<<"\nSo luong cong dan trong danh sach: "<<l.numberOfElements;
+		for(int i = 0;i < l.numberOfElements; i++)
+			PrintCitizen(l.element[i]);
+	}
+}
+void RemoveAll(LIST &l){
+	l.numberOfElements = 0;
+}
+LIST concatenateTwoList(LIST l1, LIST l2){
+	LIST res;
+	InitList(res);
+	if(!IsEmpty(l1)){
+		for(int i = 0; i < l1.numberOfElements; i++)
+			AddLast(res, l1.element[i]);
+	}
+	if(!IsEmpty(l2)){
+		for(int i = 0; i < l2.numberOfElements; i++)
+			AddLast(res, l2.element[i]);
+	}
+	return res;
+}
+
+int main(int argc, char *argv[])
+{
+	LIST l;
+	InitList(l);
+	while(true){
+		cout<<"\n- - - - - - - - - - - -";
+		cout<<"\n1. Kiem tra danh sach rong";
+		cout<<"\n2. Chen 1 phan tu vao dau danh sach";
+		cout<<"\n3. Chen 1 phan tu vao cuoi danh sach";
+		cout<<"\n4. Huy 1 phan tu dau danh sach";
+		cout<<"\n5. Huy 1 phan tu o cuoi danh sach ";
+		cout<<"\n6.Tim 1 phan tu trong danh sach";
+		cout<<"\n7. Liet ke danh sach";
+		cout<<"\n8. Kiem tra danh sach day";
+		cout<<"\n9. Quick sort";
+		cout<<"\n10. Selection sort";
+		cout<<"\n11. Nhap danh sach";
+		cout<<"\n12. Huy cong dan co ma so can cuoc nhap tu ban phim trong danh sach";
+		cout<<"\n13. Noi 2 danh sach";
+		cout<<"\n14. Huy toan bo danh sach";
+		cout<<"\n15. Thoat"
+		cout<<"\nChon thao tac(1 -> 15): ";
+		int choice = 0;
+		cin>>choice;
+		switch(choice){
+			case 1:{
+				if(IsEmpty(l))
+					cout<<"\nDanh sach rong";
+				else	
+					cout<<"\nDanh sach khong rong";
+				break;
+			}			
+			case 2:{
+				if(IsFull(l))
+					cout<<"\nDanh sach day khong chen phan tu duoc";
+				else{
+					cout<<"\nNhap thong tin cong dan can chen: ";
+					CITIZEN newElement;
+				InputCitizen(newElement);
+					AddFirst(l, newElement);
+				}	
+				break;
+			}
+			case 3:{
+				if(IsFull(l))
+					cout<<"\nDanh sach day khong chen phan tu duoc";
+				else{
+					cout<<"\nNhap thong tin cong dan can chen: ";
+					CITIZEN newElement;
+			InputCitizen(newElement);
+					AddLast(l, newElement);
+					}
+				break;
+			}
+			case 4:{
+				if(IsEmpty(l))
+					cout<<"\nDanh sach rong khong huy duoc";
+				else
+					RemoveFirst(l);
+				break;
+			}
+			case 5:{
+				if(IsEmpty(l))	cout<<"\nDanh sach rong khong huy duoc";
+							else
+							RemoveLast(l);
+				break;
+			}
+			case 6:{
+				
+				break;
+			}
+			default:{
+				cout<<"\n8. Kiem tra danh sach day";
+		cout<<"\n9. Quick sort";
+		cout<<"\n10. Selection sort";
+		cout<<"\n11. Nhap danh sach";
+		cout<<"\n12. Huy cong dan co ma so can cuoc nhap tu ban phim trong danh sach";
+		cout<<"\n13. Noi 2 danh sach";
+		cout<<"\n14. Huy toan bo danh sach";
+			}
+		}
+						else
+							if(choice == 6){
+								cout<<"\nNhap id cong dan can tim tim";
+								string key;
+			
+								cin.ignore();
+																			getline(cin,key);
+								if(BinaryFindElement(l, key) != -1)
+								cout<<"\nTim thay";
+							else
+								cout<<"\nKhong tim thay";
+							}
+							else{
+								if(choice == 7){
+								if(IsEmpty(l))
+								cout<<"Danh sach rong! Khong co phan tu!";
+								else
+									PrintList(l);	
+								}
+							}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
