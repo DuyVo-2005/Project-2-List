@@ -1,0 +1,86 @@
+#include <iostream>
+#include<fstream>
+#define ElementType int
+using namespace std;
+struct NODE
+{
+	ElementType info;
+	NODE* pNext;
+};
+struct LIST
+{
+	NODE* pHead;
+	NODE* pTail;
+};
+void RemoveLast(LIST &l){
+	if(IsEmpty(l))	return;
+	if(l.pHead == l.pTail)//1 phan tu
+		l.pHead = l.pTail = NULL;
+	else{
+		Node *p = l.pHead;
+		while(p->pNext != p.pTail)//luu node truoc tail
+			p = p->pNext;
+		delete l.pTail;
+		if(p == l.pHead)
+			l.pTail = l.pHead
+		else
+			l.pTail = p;
+	}
+}
+bool IsSmaller(CITIZEN a, CITIZEN b){
+	return a.id < b.id;
+}
+void RemoveAll(LIST &l){
+	while(!IsEmpty(l)){
+		RemoveFirst(l);
+	}
+}
+bool FindElement(LIST &l, string id){
+	for(Node *p = l.pHead; p!= NULL; p = p->pNext)
+		if(p->info.id == id)
+			return true;
+	return false;
+}
+void PrintCitizen(CITIZEN citizen){
+	cout<<"\nMa can cuoc: "<<citizen.id;
+	cout<<"\nTen cong dan: "<<citizen.name;
+	cout<<"\nQue quan: ";
+}
+void PrintList(LIST &l){
+	for(Node *p = l.pHead; p!=NULL; p= p->pNext)
+		PrintCitizen()
+}
+void QuickSort(LIST &l){
+	if(l.pHead == l.pTail)	return;
+	LIST l1, l2;
+	InitList(l1); InitList(l2);
+	ElementType key = l.pHead;
+	Node *p = l.pHead->pNext;
+	while(p!=NULL){
+		Node *q = p;
+		p = p->pNext;
+		q->pNext = NULL;//co lap nut dang xet
+		if(IsSmaller(key->info, p->info))	AddLast(l1, p->info);
+		else	AddLast(l2, p->info);
+	}
+	QuickSort(l1);
+	QuickSort(l2);
+	if(!IsEmpty(l1)){
+		l.pHead = l1.pHead;
+		l1.pTail->pNext = key;
+	}
+	else{
+		l.pHead = key;
+	}
+	key->pNext = l2.pHead;
+	if(!IsEmpty(l2)){
+		l.pTail = l2.pTail;
+	}
+	else{
+		l2.pTail = key;
+	}
+}
+int main(int argc, char *argv[])
+{
+	return 0;
+}
