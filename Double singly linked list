@@ -1,0 +1,80 @@
+#include<iostream>
+using namespace std;
+struct CITIZEN{
+	string id;
+	string name;
+	string nativePlace;
+}
+#define ElementType CITIZEN
+struct NODE
+{
+	ElementType info;
+	NODE* pNext;
+};
+struct CLIST
+{
+	NODE* pHead;
+	NODE* pTail;
+};
+void InitList(DLIST &l){
+	l.pHead = l.pTail = NULL;
+}
+NODE *CreateNode(ElementType newInfo){
+	NODE *p = new NODE;
+	if(p == NULL)	return NULL;
+	p->info = newInfo;
+	p->pNext = NULL;
+	return p;
+}
+bool IsEmpty(DLIST l){
+	if(l.pHead == NULL)
+		return true;
+	return false;
+}
+void AddFirst(DLIST &l, ElementType newInfo){
+	NODE *p = new NODE;
+	if(IsEmpty(l))	l.pHead = l.pTail = p;
+	else{
+		p->pNext = l.pHead;
+		l.pHead = p;
+	}
+	l.pTail->pNext = l.pHead;
+}
+void AddLast(DLIST &l, ElementType newInfo){
+	NODE *p = CreateNode(newInfo);
+	if(IsEmpty(l))
+		l.pHead = l.pTail = p;
+	else{
+		l.pTail->pNext = p;
+		l.pTail = p;
+	}
+	l.pTail->pNext = l.pHead;
+}
+void RemoveFirst(DLIST &l){
+	if(!IsEmpty(l)){
+		NODE *p = l.pHead;
+		l.pHead = l.pHead->pNext;
+		delete p;
+		if(l.pHead == NULL)
+			l.pTail = NULL;
+		l.pTail->pNext = l.pHead;
+	}
+}
+void RemoveLast(DLIST &l){
+	if(!IsEmpty(l)){
+		if(l.pHead == l.pTail)//1 phan tu
+			l.pHead = l.pTail = NULL;
+		NODE *p = l.pHead;//luu nut truoc nut can xoa
+		while(p->pNext != p.Head)//chua phai Tail
+		{
+			p = p->pNext;
+		}
+		delete l.pTail;
+		l.pTail = p;
+		l.pTail->pNext = l.pHead;
+	}
+}
+int main(int argc, char *argv[])
+{
+	return 0;
+}
