@@ -1,0 +1,377 @@
+//circular linked list
+#include<iostream>
+using namespace std;
+#include<string.h>
+#include<string>
+struct CITIZEN {
+	string id;
+	string name;
+	string nativePlace;
+};
+#define ElementType CITIZEN
+struct NODE {
+	ElementType info;
+	NODE* pNext;
+};
+struct CLIST {
+	NODE* pHead;
+	NODE* pTail;
+};
+void InitList(CLIST& l) {
+	l.pHead = l.pTail = NULL;
+}
+NODE* CreateNode(ElementType infoNode) {
+	NODE* p = new NODE;
+	if (p == NULL)	return NULL;
+	p->info = infoNode;
+	p->pNext = NULL;
+	return p;
+}
+bool IsEmpty(CLIST l) {
+	if (l.pHead == NULL)
+		return true;
+	return false;
+}
+void AddFirst(CLIST& l, ElementType newElement) {
+	NODE* p = CreateNode(newElement);
+	if (IsEmpty(l)) {
+		l.pHead = l.pTail = p;
+	}
+	else {
+		p->pNext = l.pHead;
+		l.pHead = p;
+	}
+	l.pTail->pNext = l.pHead;
+}
+void AddLast(CLIST& l, ElementType newElement) {
+	NODE* p = CreateNode(newElement);
+	if (IsEmpty(l))
+		l.pHead = l.pTail = p;
+	else {
+		l.pTail->pNext = p;
+		l.pTail = p;
+	}
+	l.pTail->pNext = l.pHead;
+}
+void RemoveFirst(CLIST& l) {
+	if (IsEmpty(l)) return;
+	NODE* p = l.pHead;
+	if (l.pHead == l.pTail)//1 phan tu -> sau khi xoa, list rong 
+		l.pHead = l.pTail = NULL;
+	else {//nhieu hon 1 phan tu
+		l.pHead = l.pHead->pNext;
+		l.pTail->pNext = l.pHead;//tro lai l.pTail -> pNext la l.pHead moi
+	}
+	delete p;
+}
+void RemoveLast(CLIST& l) {
+	if (IsEmpty(l))	return;
+	if (l.pHead == l.pTail)//1 phan tu
+	{
+		delete l.pTail;//
+		l.pHead = l.pTail = NULL;
+	}
+	else {
+		NODE* p = l.pHead;
+		while (p->pNext != l.pTail)//luu node truoc tail
+			p = p->pNext;
+		delete l.pTail;
+		l.pTail = p;
+		l.pTail->pNext = l.pHead;// khong dua ra ngoai do neu 1 phan tu thi NULL tro NULL
+	}
+}
+bool FindElement(CLIST& l, string id) {
+	if (IsEmpty(l))	return false;
+	if (l.pHead->info.id == id)	return true;
+	for (NODE* p = l.pHead->pNext; p != l.pHead; p = p->pNext)
+		if (p->info.id == id)
+			return true;
+	return false;
+}
+bool IsSmaller(ElementType a, ElementType b) {
+	return a.id < b.id;
+}
+bool IsSmaller(int a, int b) {
+	return a < b;
+}
+void QuickSort(CLIST& l) {
+	if (l.pHead == l.pTail)	return;
+	CLIST l1, l2;
+	InitList(l1); InitList(l2);
+	NODE* key = l.pHead;
+	NODE* p = l.pHead->pNext;
+	while (p != l.pHead) {
+		NODE* q = p;
+		p = p->pNext;
+		q->pNext = NULL;//co lap nut dang xet
+		if (IsSmaller(q->info, key->info))	AddLast(l1, q->info);
+		else	AddLast(l2, q->info);
+	}
+	QuickSort(l1);
+	QuickSort(l2);
+	if (!IsEmpty(l1)) {
+		l.pHead = l1.pHead;
+		l1.pTail->pNext = key;
+	}
+	else {
+		l.pHead = key;
+	}
+	if (!IsEmpty(l2)) {
+		key->pNext = l2.pHead;
+		l.pTail = l2.pTail;
+	}
+	else {
+		l.pTail = key;
+	}
+	l.pTail->pNext = l.pHead;
+}
+void swap(NODE* a, NODE* b) {//dinh nghia lai swap hoan vi info != swap mac dinh c++
+	if (a != b) {
+		ElementType temp = a->info;
+		a->info = b->info;
+		b->info = temp;
+	}
+}
+void SelectionSort(CLIST& l) {
+	if (l.pHead == l.pTail)	return;//0 hoac 1 phan tu
+	NODE* i, * j;
+	for (i = l.pHead; i != l.pTail; i = i->pNext) {
+		NODE* min = i;
+		for (j = i->pNext; j != l.pHead; j = j->pNext)
+			if (IsSmaller(j->info, min->info))
+				min = j;
+		if (min != i)	swap(i, min);//chi hoan vi info->dinh nghia lai ham swap
+	}
+}
+void InputCitizen(CITIZEN& Name) {
+	cout << "\nNhap ma so can cuoc: ";
+	cin.ignore();
+	getline(cin, Name.id);
+	cout << "Nhap ho ten cong dan: ";
+	getline(cin, Name.name);
+	cout << "Nhap que quan: ";
+	getline(cin, Name.nativePlace);
+}
+void PrintCitizen(CITIZEN Name) {
+	cout << "\nMa so can cuoc: " << Name.id;
+	cout << "\nTen cong dan: " << Name.name;
+	cout << "\nQue quan: " << Name.nativePlace;
+}
+void PrintList(CLIST l) {
+	if (IsEmpty(l))	cout << "\nDanh sach rong! Khong co cong dan nao!";
+	else {
+		cout << "\nCac cong dan trong danh sach: ";
+		PrintCitizen(l.pHead->info);
+		for (NODE* p = l.pHead->pNext; p != l.pHead; p = p->pNext)
+			PrintCitizen(p->info);
+	}
+}
+void RemoveAll(CLIST& l) {
+	while (!IsEmpty(l)) {
+		RemoveFirst(l);
+	}
+}
+CLIST concatenateTwoList(CLIST l1, CLIST l2) {
+	CLIST res;
+	InitList(res);
+	if (!IsEmpty(l1)) {
+		NODE* p = l1.pHead;
+		AddLast(res, p->info);// xu ly rieng l1.pHead
+		p = p->pNext;
+		while (p != l1.pHead) {
+			AddLast(res, p->info);
+			p = p->pNext;// cap nhat con tro p
+		}
+	}
+	if (!IsEmpty(l2)) {
+		NODE* p = l2.pHead;
+		AddLast(res, p->info);// xu ly rieng l2.pHead
+		p = p->pNext;
+		while (p != l2.pHead) {
+			AddLast(res, p->info);
+			p = p->pNext;//
+		}
+	}
+	return res;
+}
+void RemoveNode(CLIST& l, NODE* p) {
+	if (IsEmpty(l))	return;
+	if (p == l.pHead) {
+		RemoveFirst(l);
+		return;
+	}
+	if (p == l.pTail) {
+		RemoveLast(l);
+		return;
+	}
+	for (NODE* q = l.pHead; q != l.pTail; ) {//r la nut can xoa 
+		NODE* r = q->pNext;
+		if (r == p) {
+			q->pNext = r->pNext;
+			delete r;
+			return;
+		}
+		q = q->pNext;
+	}
+}
+void RemoveId(CLIST& l, string Id) {
+	if (l.pHead->info.id == Id) {
+		RemoveFirst(l);
+		return;
+	}
+	for (NODE* i = l.pHead->pNext; i != l.pHead; i = i->pNext)//
+		if (i->info.id == Id) {
+			RemoveNode(l, i);
+			break;
+		}
+}
+int main(int argc, char* argv[])
+{
+	CLIST l;
+	InitList(l);
+	bool Continue = true;
+	while (Continue) {
+		cout << "\n- - - - - - - - - - - -";
+		cout << "\n1. Kiem tra danh sach rong";
+		cout << "\n2. Chen 1 phan tu vao dau danh sach";
+		cout << "\n3. Chen 1 phan tu vao cuoi danh sach";
+		cout << "\n4. Huy 1 phan tu dau danh sach";
+		cout << "\n5. Huy 1 phan tu o cuoi danh sach ";
+		cout << "\n6. Tim 1 phan tu trong danh sach";
+		cout << "\n7. Liet ke danh sach";
+		cout << "\n8. Quick sort";
+		cout << "\n9. Selection sort";
+		cout << "\n10. Huy cong dan co ma so can cuoc nhap tu ban phim trong danh sach";
+		cout << "\n11. Noi 2 danh sach";
+		cout << "\n12. Huy toan bo danh sach";
+		cout << "\n13. Tao node moi";
+		cout << "\n14. Thoat";
+		cout << "\nChon thao tac(1 -> 14): ";
+		int choice;
+		cin >> choice;
+		switch (choice) {
+		case 1: {
+			if (IsEmpty(l))
+				cout << "\nDanh sach rong";
+			else
+				cout << "\nDanh sach khong rong";
+			break;
+		}
+		case 2: {
+			cout << "\nNhap thong tin cong dan can chen: ";
+			CITIZEN newElement;
+			InputCitizen(newElement);
+			AddFirst(l, newElement);
+			break;
+		}
+		case 3: {
+			cout << "\nNhap thong tin cong dan can chen: ";
+			CITIZEN newElement;
+			InputCitizen(newElement);
+			AddLast(l, newElement);
+			break;
+		}
+		case 4: {
+			if (IsEmpty(l))
+				cout << "\nDanh sach rong khong huy duoc";
+			else
+				RemoveFirst(l);
+			break;
+		}
+		case 5: {
+			if (IsEmpty(l))	cout << "\nDanh sach rong khong huy duoc";
+			else
+				RemoveLast(l);
+			break;
+		}
+		case 6: {
+			cout << "\nNhap id cong dan can tim: ";
+			string key;
+			cin.ignore();
+			getline(cin, key);
+			if (FindElement(l, key))
+				cout << "\nTim thay";
+			else
+				cout << "\nKhong tim thay";
+			break;
+		}
+		case 7: {
+			if (IsEmpty(l))
+				cout << "Danh sach rong! Khong co phan tu!";
+			else
+				PrintList(l);
+			break;
+		}
+		case 8: {
+			QuickSort(l);
+			break;
+		}
+		case 9: {
+			SelectionSort(l);
+			break;
+		}
+		case 10: {
+			cout << "\nNhap ma so can cuoc can huy (nhap sai se khong huy): ";
+			string Id;
+			cin.ignore();
+			getline(cin, Id);
+			RemoveId(l, Id);
+			break;
+		}
+		case 11: {
+			CLIST l2, l3;
+			InitList(l2);
+			int tmp;
+			while (true) {
+				cout << "\nNhap 0 de dung, nhap 1 de nhap danh sach thu hai: ";
+				cin >> tmp;
+				if (tmp == 0)	break;
+				if (tmp == 1)
+				{
+					CITIZEN newCitizen;
+					while (true)
+					{
+						cout << "\nNhap 0 de dung, nhap 1 de tiep tuc nhap danh sach thu hai: ";
+						cin >> tmp;
+						if (tmp == 0)	break;
+						cout << "\nNhap thong tin cong dan can them vao danh sach thu hai: ";
+						InputCitizen(newCitizen);
+						AddLast(l2, newCitizen);
+					}
+
+				}
+				if (tmp == 0)	break;
+			}
+			l3 = concatenateTwoList(l, l2);
+			cout << "\nDanh sach sau khi noi 2 list: ";
+			PrintList(l3);
+			break;
+		}
+		case 12: {
+			RemoveAll(l);
+			break;
+		}
+		case 13: {
+			CITIZEN newCitizen;
+			cout << "\nNhap thong tin cong dan can tao node moi: ";
+			InputCitizen(newCitizen);
+			NODE* p = CreateNode(newCitizen);
+			if (p == NULL)	cout << "\nBo nho day khong tao node duoc!";
+			else
+			{
+				cout << "\nThong tin node vua tao: ";
+				PrintCitizen(p->info);
+			}
+			break;
+		}
+		case 14: {
+			Continue = false;
+			break;
+		}
+		default: {
+			cout << "\nSo vua nhap khong hop le!";
+		}
+		}
+	}
+	return 0;
+}
