@@ -50,15 +50,14 @@ void AddLast(LIST& l, ElementType newElement) {
 		l.pTail = p;
 	}
 }
-int RemoveFirst(LIST& l) {
+void RemoveFirst(LIST& l) {
 	if (IsEmpty(l))
-		return 1;
+		return;
 	NODE* p = l.pHead;
 	l.pHead = l.pHead->pNext;
 	delete p;
 	if (l.pHead == NULL)// sau khi xoa, list rong
-		l.pTail = NULL;
-	return 0;
+		l.pTail = NULL;;
 }
 void RemoveLast(LIST& l) {
 	if (IsEmpty(l))	return;
@@ -77,6 +76,7 @@ void RemoveLast(LIST& l) {
 	}
 }
 bool FindElement(LIST& l, string id) {
+	if (IsEmpty(l))	return false;
 	for (NODE* p = l.pHead; p != NULL; p = p->pNext)
 		if (p->info.id == id)
 			return true;
@@ -121,7 +121,7 @@ void QuickSort(LIST& l) {
 		l.pTail = l2.pTail;
 	}
 	else {
-		l2.pTail = key;
+		l.pTail = key;
 	}
 }
 void swap(NODE* a, NODE* b) {//dinh nghia lai swap hoan vi info != swap mac dinh c++
@@ -197,6 +197,7 @@ void RemoveNode(LIST &l, NODE*p) {
 	}
 	if (p == l.pTail) {
 		RemoveLast(l);
+		return;
 	}
 	for (NODE* q = l.pHead; q != l.pTail; ) {//r la nut can xoa 
 		NODE* r = q->pNext;
@@ -234,8 +235,9 @@ int main(int argc, char* argv[])
 		cout << "\n10. Huy cong dan co ma so can cuoc nhap tu ban phim trong danh sach";
 		cout << "\n11. Noi 2 danh sach";
 		cout << "\n12. Huy toan bo danh sach";
-		cout << "\n13. Thoat";
-		cout << "\nChon thao tac(1 -> 13): ";
+		cout << "\n13. Tao node moi";
+		cout << "\n14. Thoat";
+		cout << "\nChon thao tac(1 -> 14): ";
 		int choice;
 		cin >> choice;
 		switch (choice) {
@@ -300,7 +302,7 @@ int main(int argc, char* argv[])
 			break;
 		}
 		case 10: {
-			cout << "\nNhap ma so can cuoc can huy: ";
+			cout << "\nNhap ma so can cuoc can huy (nhap sai se khong huy): ";
 			string Id;
 			cin.ignore();
 			getline(cin, Id);
@@ -341,6 +343,19 @@ int main(int argc, char* argv[])
 			break;
 		}
 		case 13: {
+			CITIZEN newCitizen;
+			cout << "\nNhap thong tin cong dan can tao node moi: ";
+			InputCitizen(newCitizen);
+			NODE* p = CreateNode(newCitizen);
+			if (p == NULL)	cout << "\nBo nho day khong tao node duoc!";
+			else
+			{
+				cout << "\nThong tin node vua tao: ";
+				PrintCitizen(p->info);
+			}
+			break;
+		}
+		case 14: {
 			Continue = false;
 			break;
 		}
